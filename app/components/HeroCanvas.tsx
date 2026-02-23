@@ -20,11 +20,17 @@ export default function HeroCanvas() {
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
     camera.position.set(0, 0, 6);
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: true,
-      powerPreference: "high-performance",
-    });
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      return;
+    }
+
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
@@ -61,15 +67,24 @@ export default function HeroCanvas() {
 
     window.addEventListener("mousemove", onMove);
 
-    const resizeObserver = new ResizeObserver(() => {
+    const handleResize = () => {
       const width = container.clientWidth;
       const height = container.clientHeight;
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
-    });
+    };
 
-    resizeObserver.observe(container);
+    const canObserveResize = typeof ResizeObserver !== "undefined";
+    const resizeObserver = canObserveResize
+      ? new ResizeObserver(handleResize)
+      : null;
+
+    if (resizeObserver) {
+      resizeObserver.observe(container);
+    } else {
+      window.addEventListener("resize", handleResize);
+    }
 
     const clock = new THREE.Clock();
     let frameId = 0;
@@ -93,12 +108,18 @@ export default function HeroCanvas() {
 
     return () => {
       window.removeEventListener("mousemove", onMove);
-      resizeObserver.disconnect();
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      } else {
+        window.removeEventListener("resize", handleResize);
+      }
       cancelAnimationFrame(frameId);
       geometry.dispose();
       material.dispose();
       renderer.dispose();
-      container.removeChild(renderer.domElement);
+      if (renderer.domElement.parentElement === container) {
+        container.removeChild(renderer.domElement);
+      }
     };
   }, []);
 
