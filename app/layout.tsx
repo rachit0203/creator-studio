@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, IBM_Plex_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { SignedIn } from "@clerk/nextjs";
 import CustomCursor from "./components/CustomCursor";
+import FloatingChatbotGuide from "./components/FloatingChatbotGuide";
 import "./globals.css";
 
 const display = Geist({
@@ -44,11 +46,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${display.variable} ${mono.variable} antialiased`}>
         <ClerkProvider appearance={{
-        //@ts-ignore
         layout: { unsafe_disableDevelopmentModeWarnings: true }
       }}>
           <CustomCursor />
           {children}
+          <SignedIn>
+            <FloatingChatbotGuide />
+          </SignedIn>
         </ClerkProvider>
       </body>
     </html>
