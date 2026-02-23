@@ -1,0 +1,1248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$meta": {
+    "title": "basement.studio — Homepage UI/UX Specification",
+    "version": "1.0.0",
+    "source": "https://basement.studio",
+    "description": "Pixel-perfect UI/UX specification for replicating the basement.studio homepage. Covers layout, typography, color, animation, 3D, accessibility, and responsive behavior.",
+    "techStack": ["Next.js 14 (App Router)", "Three.js / WebGL", "GSAP 3 + ScrollTrigger", "Tailwind CSS", "Framer Motion (supplemental)", "BaseHub CMS"]
+  },
+
+  "designPhilosophy": {
+    "ethos": "Minimal, high-contrast, brutally confident. Every pixel is intentional. Dark backgrounds, white type, monospaced accents, and 3D WebGL elements that feel alive but never distracting.",
+    "tone": "Technical elegance. Studio-grade craft. Anti-corporate.",
+    "keyPrinciples": [
+      "Maximum contrast — near-black backgrounds, near-white text",
+      "Typography as layout — headlines ARE the hero",
+      "Restrained color — accent red used sparingly and powerfully",
+      "Motion earns its place — entrance animations reveal, not decorate",
+      "3D reinforces identity without competing with copy",
+      "Whitespace is structural, not decorative"
+    ]
+  },
+
+  "colorSystem": {
+    "description": "A strict monochromatic dark palette with a single accent color. Opacities create depth.",
+    "tokens": {
+      "background": {
+        "primary":   { "hex": "#0A0A0A", "usage": "Page background, nav, footer" },
+        "secondary": { "hex": "#111111", "usage": "Card surfaces, elevated sections" },
+        "tertiary":  { "hex": "#1A1A1A", "usage": "Borders, subtle separators" }
+      },
+      "foreground": {
+        "primary":   { "hex": "#FAFAFA", "usage": "Primary text, headlines" },
+        "secondary": { "hex": "#A1A1AA", "usage": "Body text, captions, meta" },
+        "tertiary":  { "hex": "#52525B", "usage": "Placeholder text, disabled states" }
+      },
+      "accent": {
+        "brand":         { "hex": "#FF3B00", "usage": "CTA buttons, hover underlines, active nav, marquee separators" },
+        "brandSubdued":  { "hex": "#FF3B0033", "usage": "Accent glow, focus rings" }
+      },
+      "border": {
+        "default": { "hex": "#FFFFFF0D", "usage": "Hairline borders (5% white)" },
+        "strong":  { "hex": "#FFFFFF1A", "usage": "Card outlines (10% white)" }
+      },
+      "overlay": {
+        "scrim":   { "hex": "#00000099", "usage": "Nav drawer overlay" },
+        "gradient": {
+          "heroBottom": "linear-gradient(to bottom, transparent 60%, #0A0A0A 100%)",
+          "cardEdge":   "linear-gradient(to right, #0A0A0A 0%, transparent 8%, transparent 92%, #0A0A0A 100%)"
+        }
+      }
+    },
+    "opacityScale": [0, 0.04, 0.08, 0.12, 0.2, 0.4, 0.6, 0.8, 1.0],
+    "semanticModes": {
+      "dark": "default — site is dark-mode only",
+      "light": "not supported"
+    }
+  },
+
+  "typography": {
+    "description": "Two-font system: display grotesque for headlines, monospace for UI labels and metadata.",
+    "fontFamilies": {
+      "display": {
+        "name": "ABC Diatype",
+        "fallback": "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        "source": "Self-hosted / custom license",
+        "weights": [300, 400, 500, 700],
+        "features": ["kern", "liga", "ss01"],
+        "note": "If unavailable, substitute with 'DM Sans' or 'Geist' — do NOT use Inter"
+      },
+      "mono": {
+        "name": "ABC Diatype Mono",
+        "fallback": "'IBM Plex Mono', 'Fira Code', monospace",
+        "source": "Self-hosted / custom license",
+        "weights": [400, 500],
+        "features": ["kern", "tnum"]
+      }
+    },
+    "scale": {
+      "hero": {
+        "fontFamily": "display",
+        "fontSize":   { "base": "clamp(2.75rem, 7vw, 6rem)", "min": "2.75rem", "max": "6rem" },
+        "lineHeight": 1.0,
+        "fontWeight": 500,
+        "letterSpacing": "-0.03em",
+        "textTransform": "none",
+        "usage": "H1 hero headline"
+      },
+      "h2": {
+        "fontFamily": "display",
+        "fontSize":   { "base": "clamp(1.5rem, 3vw, 2.25rem)" },
+        "lineHeight": 1.15,
+        "fontWeight": 500,
+        "letterSpacing": "-0.02em",
+        "usage": "Section headings — Trusted by Visionaries, Featured Projects"
+      },
+      "h3": {
+        "fontFamily": "display",
+        "fontSize":   { "base": "clamp(1.25rem, 2vw, 1.75rem)" },
+        "lineHeight": 1.2,
+        "fontWeight": 500,
+        "letterSpacing": "-0.015em",
+        "usage": "Capabilities section title, Contact heading"
+      },
+      "h4": {
+        "fontFamily": "display",
+        "fontSize":   "1.125rem",
+        "lineHeight": 1.3,
+        "fontWeight": 500,
+        "letterSpacing": "-0.01em",
+        "usage": "Capability item headings"
+      },
+      "body": {
+        "fontFamily": "display",
+        "fontSize":   "1rem",
+        "lineHeight": 1.65,
+        "fontWeight": 300,
+        "letterSpacing": "0em",
+        "color": "foreground.secondary",
+        "usage": "Paragraphs, project descriptions"
+      },
+      "small": {
+        "fontFamily": "display",
+        "fontSize":   "0.875rem",
+        "lineHeight": 1.5,
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "usage": "Project tags, footer copy"
+      },
+      "label": {
+        "fontFamily": "mono",
+        "fontSize":   "0.75rem",
+        "lineHeight": 1.4,
+        "fontWeight": 500,
+        "letterSpacing": "0.08em",
+        "textTransform": "uppercase",
+        "color": "foreground.secondary",
+        "usage": "Nav items, meta labels, breadcrumbs, badge text"
+      },
+      "nav": {
+        "fontFamily": "display",
+        "fontSize":   "0.875rem",
+        "lineHeight": 1.0,
+        "fontWeight": 400,
+        "letterSpacing": "-0.01em",
+        "usage": "Top navigation links"
+      },
+      "marquee": {
+        "fontFamily": "display",
+        "fontSize":   { "base": "clamp(0.75rem, 1.2vw, 1rem)" },
+        "lineHeight": 1.0,
+        "fontWeight": 400,
+        "letterSpacing": "0em",
+        "usage": "Infinite scrolling client logos text"
+      },
+      "contactEmail": {
+        "fontFamily": "display",
+        "fontSize":   { "base": "clamp(1.5rem, 3.5vw, 2.5rem)" },
+        "lineHeight": 1.1,
+        "fontWeight": 500,
+        "letterSpacing": "-0.02em",
+        "usage": "hello@basement.studio large CTA link"
+      }
+    }
+  },
+
+  "spacingScale": {
+    "description": "4-point base grid. All spacing values are multiples of 4px.",
+    "unit": 4,
+    "tokens": {
+      "0":   "0px",
+      "1":   "4px",
+      "2":   "8px",
+      "3":   "12px",
+      "4":   "16px",
+      "5":   "20px",
+      "6":   "24px",
+      "8":   "32px",
+      "10":  "40px",
+      "12":  "48px",
+      "14":  "56px",
+      "16":  "64px",
+      "20":  "80px",
+      "24":  "96px",
+      "28":  "112px",
+      "32":  "128px",
+      "40":  "160px",
+      "48":  "192px"
+    },
+    "semanticTokens": {
+      "sectionPaddingY":    { "mobile": "80px",  "desktop": "160px" },
+      "containerPaddingX":  { "mobile": "20px",  "tablet": "32px",  "desktop": "48px" },
+      "navHeight":          { "mobile": "56px",  "desktop": "64px" },
+      "cardPadding":        { "mobile": "24px",  "desktop": "32px" },
+      "capabilityRowGapY":  "32px",
+      "projectCardGap":     "24px",
+      "footerPaddingY":     "80px"
+    }
+  },
+
+  "gridSystem": {
+    "description": "CSS Grid + Flexbox hybrid. 12-column grid at desktop, fluid at mobile.",
+    "maxWidth": "1440px",
+    "columns": {
+      "mobile":  4,
+      "tablet":  8,
+      "desktop": 12
+    },
+    "gutter": {
+      "mobile":  "20px",
+      "tablet":  "24px",
+      "desktop": "32px"
+    },
+    "margin": {
+      "mobile":  "20px",
+      "tablet":  "32px",
+      "desktop": "48px"
+    },
+    "namedAreas": {
+      "hero":          "cols 1–12, full-bleed with internal padding",
+      "marquee":       "full-bleed (overflow hidden, edge-fade gradient)",
+      "projects":      "cols 1–12, 2-col at desktop, 1-col at mobile",
+      "capabilities":  "cols 1–12; label col 1–2, content col 3–12 at desktop",
+      "contact":       "cols 1–12, centered",
+      "footer":        "full-width, 2-col layout with logo + nav"
+    }
+  },
+
+  "breakpoints": {
+    "xs":  { "minWidth": "0px",    "maxWidth": "479px",  "label": "Mobile S" },
+    "sm":  { "minWidth": "480px",  "maxWidth": "767px",  "label": "Mobile L" },
+    "md":  { "minWidth": "768px",  "maxWidth": "1023px", "label": "Tablet" },
+    "lg":  { "minWidth": "1024px", "maxWidth": "1279px", "label": "Desktop S" },
+    "xl":  { "minWidth": "1280px", "maxWidth": "1439px", "label": "Desktop M" },
+    "2xl": { "minWidth": "1440px",                       "label": "Desktop L" }
+  },
+
+  "componentHierarchy": {
+    "App": {
+      "description": "Root layout — provides global styles, fonts, cursor, GSAP context",
+      "children": ["CustomCursor", "Navigation", "Main", "Footer"],
+      "globalProviders": ["GSAPProvider", "WebGLProvider", "ThemeProvider"]
+    },
+
+    "CustomCursor": {
+      "description": "Two-layer cursor: small dot + larger trailing ring. Scales on hover over interactive elements.",
+      "implementation": "Absolutely positioned divs, RAF-driven lerp, pointer-events: none",
+      "states": {
+        "default":     { "dotSize": "8px",  "ringSize": "32px", "ringOpacity": 0.4 },
+        "hover":       { "dotSize": "4px",  "ringSize": "64px", "ringOpacity": 0.8, "blend": "difference" },
+        "link":        { "dotSize": "0px",  "ringSize": "80px", "label": "View", "ringColor": "#FF3B00" },
+        "drag":        { "dotSize": "4px",  "ringSize": "48px", "label": "Drag" }
+      },
+      "animation": { "lerpFactor": 0.12, "ease": "none", "tickerMethod": "GSAP ticker" }
+    },
+
+    "Navigation": {
+      "description": "Fixed top nav bar. Transparent until scroll, then adds subtle backdrop.",
+      "layout": {
+        "display": "flex",
+        "justifyContent": "space-between",
+        "alignItems": "center",
+        "height": "var(--nav-height)",
+        "paddingX": "var(--container-padding-x)",
+        "position": "fixed",
+        "top": 0,
+        "left": 0,
+        "right": 0,
+        "zIndex": 1000
+      },
+      "states": {
+        "transparent": {
+          "background": "transparent",
+          "backdropFilter": "none",
+          "borderBottom": "none"
+        },
+        "scrolled": {
+          "background": "rgba(10, 10, 10, 0.85)",
+          "backdropFilter": "blur(12px)",
+          "borderBottom": "1px solid rgba(255,255,255,0.05)",
+          "transition": "background 300ms ease, backdrop-filter 300ms ease"
+        }
+      },
+      "scrollThreshold": "80px",
+      "children": ["NavLogo", "NavLinks", "NavCTA", "NavMenuToggle"],
+      "NavLogo": {
+        "type": "SVG wordmark",
+        "width": "120px",
+        "height": "auto",
+        "color": "#FAFAFA",
+        "hoverOpacity": 0.7,
+        "transition": "opacity 200ms ease"
+      },
+      "NavLinks": {
+        "display": "flex",
+        "gap": "32px",
+        "hiddenBelow": "md",
+        "items": [
+          { "label": "Home",     "href": "/" },
+          { "label": "Services", "href": "/services" },
+          { "label": "Showcase", "href": "/showcase", "badge": "26" },
+          { "label": "People",   "href": "/people" },
+          { "label": "Blog",     "href": "/blog",     "badge": "27" },
+          { "label": "Lab",      "href": "/lab" }
+        ],
+        "linkStyles": {
+          "font": "nav",
+          "color": "foreground.secondary",
+          "hoverColor": "foreground.primary",
+          "activeColor": "foreground.primary",
+          "transition": "color 200ms ease",
+          "underlineOnActive": { "height": "1px", "color": "accent.brand", "animation": "scaleX 200ms ease" }
+        },
+        "badgeStyles": {
+          "fontFamily": "mono",
+          "fontSize": "0.6rem",
+          "color": "foreground.tertiary",
+          "verticalAlign": "super",
+          "marginLeft": "3px"
+        }
+      },
+      "NavCTA": {
+        "label": "Contact Us",
+        "hiddenBelow": "md",
+        "styles": {
+          "border": "1px solid rgba(255,255,255,0.15)",
+          "borderRadius": "2px",
+          "paddingX": "16px",
+          "paddingY": "8px",
+          "font": "label",
+          "color": "foreground.primary",
+          "background": "transparent",
+          "hoverBackground": "#FF3B00",
+          "hoverBorder": "#FF3B00",
+          "transition": "background 200ms ease, border-color 200ms ease"
+        }
+      },
+      "NavMenuToggle": {
+        "label": "Menu",
+        "visibleBelow": "md",
+        "styles": { "font": "label", "color": "foreground.secondary" }
+      },
+      "MobileDrawer": {
+        "trigger": "NavMenuToggle",
+        "animation": {
+          "type": "overlay slide-in",
+          "background": "#0A0A0A",
+          "enterFrom": "translateX(100%)",
+          "enterTo":   "translateX(0%)",
+          "duration":  "400ms",
+          "ease":      "cubic-bezier(0.76, 0, 0.24, 1)"
+        },
+        "closeButton": { "label": "Close [ESC]", "position": "top-right" },
+        "links": { "font": "h2", "staggerDelay": "50ms", "enterFrom": "translateY(24px)", "opacity": 0 }
+      }
+    },
+
+    "Main": {
+      "description": "Page content wrapper",
+      "children": [
+        "HeroSection",
+        "MarqueeSection",
+        "FeaturedProjectsSection",
+        "CapabilitiesSection",
+        "ContactSection"
+      ]
+    },
+
+    "HeroSection": {
+      "description": "Full-viewport hero with large headline, subtext, and 3D WebGL background element.",
+      "layout": {
+        "minHeight": "100vh",
+        "display": "grid",
+        "gridTemplateRows": "1fr auto",
+        "paddingTop": "calc(var(--nav-height) + 80px)",
+        "paddingBottom": "80px",
+        "paddingX": "var(--container-padding-x)",
+        "position": "relative",
+        "overflow": "hidden"
+      },
+      "children": ["HeroBackground3D", "HeroContent"],
+      "HeroBackground3D": {
+        "description": "WebGL Three.js canvas. Renders an animated 3D object (abstract form / particles / distorted geometry) that reacts to mouse movement and scroll.",
+        "implementation": {
+          "renderer": "Three.js WebGLRenderer",
+          "canvas": {
+            "position": "absolute",
+            "inset": 0,
+            "zIndex": 0,
+            "pointerEvents": "none",
+            "alpha": true,
+            "antialias": true
+          },
+          "scene": {
+            "background": null,
+            "fog": { "color": "#0A0A0A", "near": 8, "far": 20 }
+          },
+          "camera": {
+            "type": "PerspectiveCamera",
+            "fov": 45,
+            "position": [0, 0, 6],
+            "lookAt": [0, 0, 0]
+          },
+          "object": {
+            "description": "Distorted torus knot or abstract crystalline mesh representing the studio logo/identity",
+            "geometry": "TorusKnotGeometry(1.2, 0.35, 200, 32)",
+            "material": {
+              "type": "MeshStandardMaterial",
+              "color": "#FFFFFF",
+              "roughness": 0.15,
+              "metalness": 0.85,
+              "wireframe": false,
+              "envMapIntensity": 1.2
+            },
+            "lighting": [
+              { "type": "AmbientLight",     "color": "#FFFFFF", "intensity": 0.3 },
+              { "type": "DirectionalLight", "color": "#FF3B00", "intensity": 1.5, "position": [3, 2, 2] },
+              { "type": "DirectionalLight", "color": "#FFFFFF", "intensity": 0.8, "position": [-3, -1, 2] },
+              { "type": "PointLight",       "color": "#FF3B00", "intensity": 2.0, "position": [0, 0, 4], "distance": 8 }
+            ]
+          },
+          "animations": {
+            "idle": {
+              "rotationX": "sin(time * 0.4) * 0.3",
+              "rotationY": "time * 0.25",
+              "rotationZ": "cos(time * 0.3) * 0.15"
+            },
+            "mouseParallax": {
+              "description": "Object position shifts ±0.4 units as cursor moves across viewport",
+              "lerpFactor": 0.05,
+              "maxOffset": 0.4
+            },
+            "scrollFade": {
+              "trigger": "scroll",
+              "opacityOut": "0 → 1 (0% scroll) → 1 (30%) → 0 (60%)",
+              "scaleOut":   "1.0 → 0.8 over 60% scroll"
+            },
+            "entrance": {
+              "initialScale": 0,
+              "targetScale":  1,
+              "duration": "1400ms",
+              "ease": "elastic.out(1, 0.6)",
+              "delay": "600ms"
+            }
+          }
+        }
+      },
+      "HeroContent": {
+        "position": "relative",
+        "zIndex": 1,
+        "maxWidth": "900px",
+        "children": ["HeroHeadline", "HeroSubtext"],
+        "HeroHeadline": {
+          "tag": "h1",
+          "text": "A digital studio & branding powerhouse making cool shit that performs.",
+          "typographyToken": "hero",
+          "color": "foreground.primary",
+          "animation": {
+            "type": "split-word reveal",
+            "method": "GSAP SplitText",
+            "enterFrom": { "y": "110%", "opacity": 0 },
+            "enterTo":   { "y": "0%",   "opacity": 1 },
+            "stagger":   "0.06s",
+            "duration":  "0.8s",
+            "ease":      "power4.out",
+            "delay":     "0.2s",
+            "clipMask":  true
+          }
+        },
+        "HeroSubtext": {
+          "tag": "p",
+          "text": "We partner with the world's most ambitious startups, scale-ups and brands to unlock their true potential and growth through the convergence of creativity, design, and technology.",
+          "typographyToken": "body",
+          "color": "foreground.secondary",
+          "maxWidth": "560px",
+          "marginTop": "32px",
+          "animation": {
+            "enterFrom": { "y": "24px", "opacity": 0 },
+            "enterTo":   { "y": "0",    "opacity": 1 },
+            "duration":  "0.7s",
+            "ease":      "power3.out",
+            "delay":     "0.8s"
+          }
+        }
+      }
+    },
+
+    "MarqueeSection": {
+      "description": "Infinite horizontally-scrolling ticker of client/partner logo names.",
+      "layout": {
+        "overflow": "hidden",
+        "paddingY": "48px",
+        "borderTop":    "1px solid rgba(255,255,255,0.05)",
+        "borderBottom": "1px solid rgba(255,255,255,0.05)",
+        "position": "relative"
+      },
+      "edgeFade": {
+        "pseudo": "::before + ::after",
+        "background": "linear-gradient(to right, #0A0A0A 0%, transparent 12%, transparent 88%, #0A0A0A 100%)",
+        "position": "absolute",
+        "inset": 0,
+        "zIndex": 2,
+        "pointerEvents": "none"
+      },
+      "track": {
+        "display": "flex",
+        "gap": "64px",
+        "alignItems": "center",
+        "willChange": "transform",
+        "animation": {
+          "name": "marquee",
+          "duration": "40s",
+          "timing": "linear",
+          "iteration": "infinite",
+          "direction": "normal",
+          "keyframes": {
+            "from": { "transform": "translateX(0)" },
+            "to":   { "transform": "translateX(-50%)" }
+          },
+          "pauseOnHover": true,
+          "duplication": "2x cloned set for seamless loop"
+        }
+      },
+      "separator": {
+        "character": "•",
+        "color": "accent.brand",
+        "fontSize": "0.5rem",
+        "opacity": 0.6
+      },
+      "item": {
+        "typographyToken": "marquee",
+        "color": "foreground.secondary",
+        "whiteSpace": "nowrap",
+        "hoverColor": "foreground.primary",
+        "transition": "color 200ms ease"
+      },
+      "sectionLabel": {
+        "text": "Trusted by Visionaries",
+        "display": "none",
+        "ariaLabel": "trusted-by-section"
+      },
+      "clients": [
+        "Vercel", "Next.JS", "Linear", "Cursor", "Scale", "Harvey",
+        "Black Forest Labs", "Speakeasy", "Krea", "Apollo GraphQL", "Cal",
+        "Trunk", "Replicate", "Flox", "MR Beast", "Daylight Computer",
+        "Edglrd", "KidSuper Studios", "BaseCase Capital", "Ranboo",
+        "Warren Lotas", "General Catalyst", "Knock", "BaseHub", "Accel"
+      ]
+    },
+
+    "FeaturedProjectsSection": {
+      "description": "Grid of 4 featured case study cards with image, title, description, and tags.",
+      "layout": {
+        "paddingY": "var(--section-padding-y)",
+        "paddingX": "var(--container-padding-x)"
+      },
+      "header": {
+        "tag": "h2",
+        "text": "Featured Projects",
+        "typographyToken": "h2",
+        "marginBottom": "64px",
+        "animation": {
+          "type": "scroll-triggered fade-up",
+          "trigger": "ScrollTrigger",
+          "start": "top 85%",
+          "enterFrom": { "y": "40px", "opacity": 0 },
+          "enterTo":   { "y": "0",    "opacity": 1 },
+          "duration":  "0.7s",
+          "ease":      "power3.out"
+        }
+      },
+      "grid": {
+        "display": "grid",
+        "columns": { "mobile": 1, "md": 2 },
+        "gap": "24px"
+      },
+      "ProjectCard": {
+        "description": "Case study card — image top, metadata bottom. Full card is a link.",
+        "layout": {
+          "display": "flex",
+          "flexDirection": "column",
+          "border": "1px solid rgba(255,255,255,0.08)",
+          "borderRadius": "4px",
+          "overflow": "hidden",
+          "background": "#111111",
+          "cursor": "pointer"
+        },
+        "hoverState": {
+          "borderColor": "rgba(255,255,255,0.18)",
+          "imageScale": 1.04,
+          "imageDuration": "600ms",
+          "imageEase": "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          "boxShadow": "0 24px 64px rgba(0,0,0,0.5)"
+        },
+        "transition": "border-color 300ms ease, box-shadow 300ms ease",
+        "children": ["CardImage", "CardBody"],
+        "CardImage": {
+          "aspectRatio": "16/9",
+          "objectFit": "cover",
+          "overflow": "hidden",
+          "imgTransition": "transform 600ms cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          "loading": "lazy",
+          "sizes": "(max-width: 768px) 100vw, 50vw"
+        },
+        "CardBody": {
+          "padding": "32px",
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": "16px",
+          "children": ["CardTitle", "CardDescription", "CardTags", "CardLink"],
+          "CardTitle": {
+            "tag": "h3",
+            "typographyToken": "h4",
+            "color": "foreground.primary"
+          },
+          "CardDescription": {
+            "tag": "p",
+            "typographyToken": "body",
+            "color": "foreground.secondary",
+            "lineClamp": 3
+          },
+          "CardTags": {
+            "display": "flex",
+            "flexWrap": "wrap",
+            "gap": "8px",
+            "Tag": {
+              "border": "1px solid rgba(255,255,255,0.1)",
+              "borderRadius": "2px",
+              "paddingX": "10px",
+              "paddingY": "4px",
+              "typographyToken": "label",
+              "color": "foreground.secondary"
+            }
+          },
+          "CardLink": {
+            "typographyToken": "label",
+            "color": "accent.brand",
+            "display": "flex",
+            "alignItems": "center",
+            "gap": "6px",
+            "arrowIcon": "→",
+            "hoverGap": "10px",
+            "transition": "gap 200ms ease"
+          }
+        },
+        "animation": {
+          "type": "scroll-triggered stagger",
+          "trigger": "ScrollTrigger",
+          "start": "top 90%",
+          "stagger": "0.12s",
+          "enterFrom": { "y": "60px", "opacity": 0 },
+          "enterTo":   { "y": "0",    "opacity": 1 },
+          "duration":  "0.8s",
+          "ease":      "power3.out"
+        }
+      },
+      "projects": [
+        {
+          "title": "Vercel Ship",
+          "href": "/showcase/vercel-ship-a-home-for-innovation",
+          "image": "hero-ship.webp",
+          "description": "Partnering with Vercel means pushing the limits of performance and innovation. Together, we craft a digital ecosystem built for speed, precision, and impact.",
+          "tags": ["Websites & Features", "Marketing Execution", "IRL Experience Design"]
+        },
+        {
+          "title": "Daylight",
+          "href": "/showcase/daylight-simplicity-in-motion",
+          "image": "hero-daylight.webp",
+          "description": "A bold vision needs a strong launch. We crafted a high-performance, story-driven website that cut through the noise, connected with Daylight's audience, and sold out inventory in hours.",
+          "tags": ["Websites & Features"]
+        },
+        {
+          "title": "KidSuper",
+          "href": "/showcase/kidsuper-breaking-the-norm",
+          "image": "hero-kidsuper.webp",
+          "description": "By blending crafted visuals with digital experiences, we helped KidSuper elevate their brand into a dynamic showcase—bridging art, technology, and culture in a way that captivates and inspires.",
+          "tags": ["Websites & Features"]
+        },
+        {
+          "title": "Shop MrBeast",
+          "href": "/showcase/mrbeast-built-to-handle-the-beast",
+          "image": "mrbeast.webp",
+          "description": "The world's biggest YouTuber needed a storefront built for millions—high-performance, wildly engaging, and as dynamic as a MrBeast video.",
+          "tags": ["Websites & Features"]
+        }
+      ]
+    },
+
+    "CapabilitiesSection": {
+      "description": "Studio capabilities listed in an editorial accordion/row format.",
+      "layout": {
+        "paddingY": "var(--section-padding-y)",
+        "paddingX": "var(--container-padding-x)"
+      },
+      "header": {
+        "eyebrow": { "text": "Capabilities", "typographyToken": "label" },
+        "title": {
+          "text": "We're here to create the extraordinary.",
+          "typographyToken": "h3",
+          "marginTop": "16px"
+        },
+        "subtitle": {
+          "text": "No shortcuts, just bold, precision-engineered work that elevates the game & leaves a mark.",
+          "typographyToken": "body",
+          "color": "foreground.secondary",
+          "maxWidth": "480px",
+          "marginTop": "12px"
+        },
+        "marginBottom": "64px"
+      },
+      "grid": {
+        "display": "grid",
+        "columns": { "mobile": 1, "lg": 2 },
+        "gap": { "column": "32px", "row": "64px" }
+      },
+      "CapabilityItem": {
+        "layout": {
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": "20px",
+          "paddingTop": "32px",
+          "borderTop": "1px solid rgba(255,255,255,0.08)"
+        },
+        "hoverBorderColor": "rgba(255,255,255,0.2)",
+        "transition": "border-color 300ms ease",
+        "children": ["CapabilityTitle", "CapabilityDescription", "CapabilityServices"],
+        "CapabilityTitle": {
+          "tag": "h4",
+          "typographyToken": "h4",
+          "color": "foreground.primary",
+          "isLink": true,
+          "linkHoverColor": "accent.brand",
+          "linkTransition": "color 200ms ease"
+        },
+        "CapabilityDescription": {
+          "typographyToken": "body",
+          "color": "foreground.secondary"
+        },
+        "CapabilityServices": {
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": "8px",
+          "ServiceItem": {
+            "typographyToken": "small",
+            "color": "foreground.tertiary",
+            "display": "flex",
+            "alignItems": "center",
+            "gap": "8px",
+            "bullet": { "width": "4px", "height": "4px", "borderRadius": "50%", "background": "foreground.tertiary" }
+          }
+        },
+        "animation": {
+          "type": "scroll-triggered stagger",
+          "trigger": "ScrollTrigger",
+          "start": "top 85%",
+          "stagger": "0.1s",
+          "enterFrom": { "y": "40px", "opacity": 0 },
+          "enterTo":   { "y": "0",    "opacity": 1 },
+          "duration":  "0.7s",
+          "ease":      "power3.out"
+        }
+      },
+      "capabilities": [
+        {
+          "title": "Websites & Features",
+          "href": "/showcase?category=Websites%20%26%20Features",
+          "description": "From pre-launch landing pages to complete website redesigns, we create next-generation digital experiences that capture attention and inspire action.",
+          "services": ["Product Strategy", "UX/UI Design", "Engineering", "3D & Motion Design"]
+        },
+        {
+          "title": "Visual Branding",
+          "href": "/showcase?category=Visual%20Branding",
+          "description": "From lean identities for early startups to comprehensive brand platforms for industry leaders, we craft scalable brand systems that are impossible to ignore.",
+          "services": ["Visual Identity", "Branding Systems"]
+        },
+        {
+          "title": "IRL Experience Design",
+          "href": "/showcase?category=IRL%20Experience%20Design",
+          "description": "From annual summits to local meetups, we design unforgettable in-real-life events, creating moments that engage audiences and build brand love.",
+          "services": ["Visual Identity", "Space Design", "Keynote Design", "Digital & Interactive"]
+        },
+        {
+          "title": "Marketing Execution",
+          "href": "/showcase?category=Marketing%20Execution",
+          "description": "From brand to product marketing, we collaborate with marketing teams to create assets that drive awareness, demand, and conversions.",
+          "services": ["Omni-channel Campaign Content", "Growth Experiments", "Sales Materials"]
+        }
+      ]
+    },
+
+    "ContactSection": {
+      "description": "Minimal CTA section with large email link and section heading.",
+      "layout": {
+        "paddingY": "var(--section-padding-y)",
+        "paddingX": "var(--container-padding-x)",
+        "display": "flex",
+        "flexDirection": "column",
+        "gap": "24px",
+        "borderTop": "1px solid rgba(255,255,255,0.05)"
+      },
+      "eyebrow": {
+        "text": "Contact",
+        "typographyToken": "label",
+        "color": "foreground.tertiary"
+      },
+      "heading": {
+        "text": "Let's make an impact together.",
+        "typographyToken": "h3",
+        "color": "foreground.primary"
+      },
+      "emailLink": {
+        "text": "hello@basement.studio",
+        "href": "mailto:hello@basement.studio",
+        "typographyToken": "contactEmail",
+        "color": "foreground.primary",
+        "animation": {
+          "type": "underline-reveal on hover",
+          "underline": {
+            "height": "2px",
+            "background": "accent.brand",
+            "transformOrigin": "left",
+            "scaleXDefault": 0,
+            "scaleXHover":   1,
+            "transition": "transform 300ms cubic-bezier(0.76, 0, 0.24, 1)"
+          }
+        }
+      },
+      "animation": {
+        "type": "scroll-triggered",
+        "trigger": "ScrollTrigger",
+        "start": "top 80%",
+        "enterFrom": { "y": "48px", "opacity": 0 },
+        "enterTo":   { "y": "0",    "opacity": 1 },
+        "duration":  "0.8s",
+        "ease":      "power3.out"
+      }
+    },
+
+    "Footer": {
+      "description": "Dark footer with logo, nav, newsletter, and social links.",
+      "layout": {
+        "background": "#0A0A0A",
+        "borderTop": "1px solid rgba(255,255,255,0.05)",
+        "paddingY": "var(--footer-padding-y)",
+        "paddingX": "var(--container-padding-x)"
+      },
+      "children": ["FooterTop", "FooterBottom"],
+      "FooterTop": {
+        "display": "grid",
+        "columns": { "mobile": 1, "md": "2fr 1fr" },
+        "gap": "64px",
+        "paddingBottom": "64px",
+        "borderBottom": "1px solid rgba(255,255,255,0.05)",
+        "children": ["FooterBrand", "FooterNav"],
+        "FooterBrand": {
+          "children": ["FooterLogo", "FooterTagline", "FooterNewsletter"],
+          "FooterLogo": {
+            "type": "SVG wordmark",
+            "text": "basement.studio",
+            "typographyToken": "h4",
+            "color": "foreground.primary"
+          },
+          "FooterTagline": {
+            "text": "Ready to tap into the basement vibe? Sign up for our newsletter and stay plugged into all the cool stuff we're cooking up.",
+            "typographyToken": "small",
+            "color": "foreground.secondary",
+            "maxWidth": "400px",
+            "marginTop": "20px"
+          },
+          "FooterNewsletter": {
+            "layout": {
+              "display": "flex",
+              "gap": "12px",
+              "marginTop": "24px",
+              "alignItems": "center"
+            },
+            "input": {
+              "placeholder": "Your email",
+              "type": "email",
+              "height": "44px",
+              "paddingX": "16px",
+              "background": "rgba(255,255,255,0.05)",
+              "border": "1px solid rgba(255,255,255,0.1)",
+              "borderRadius": "2px",
+              "typographyToken": "small",
+              "color": "foreground.primary",
+              "focusBorder": "rgba(255,255,255,0.3)",
+              "focusOutline": "2px solid rgba(255,59,0,0.4)",
+              "transition": "border-color 200ms ease"
+            },
+            "submit": {
+              "label": "Roll Me In",
+              "height": "44px",
+              "paddingX": "20px",
+              "background": "#FF3B00",
+              "borderRadius": "2px",
+              "typographyToken": "label",
+              "color": "#FFFFFF",
+              "hoverBackground": "#E63300",
+              "transition": "background 200ms ease",
+              "whiteSpace": "nowrap"
+            }
+          }
+        },
+        "FooterNav": {
+          "tag": "nav",
+          "display": "flex",
+          "flexDirection": "column",
+          "gap": "16px",
+          "items": [
+            { "label": "Home",     "href": "/" },
+            { "label": "Services", "href": "/services" },
+            { "label": "Showcase", "href": "/showcase", "badge": "(26)" },
+            { "label": "People",   "href": "/people" },
+            { "label": "Blog",     "href": "/blog",     "badge": "(27)" },
+            { "label": "Lab",      "href": "/lab" },
+            { "label": "Contact Us", "href": "/contact" }
+          ],
+          "linkStyles": {
+            "typographyToken": "small",
+            "color": "foreground.secondary",
+            "hoverColor": "foreground.primary",
+            "transition": "color 200ms ease"
+          }
+        }
+      },
+      "FooterBottom": {
+        "display": "flex",
+        "justifyContent": "space-between",
+        "alignItems": "center",
+        "paddingTop": "32px",
+        "flexWrap": "wrap",
+        "gap": "16px",
+        "children": ["FooterCopyright", "FooterSocials"],
+        "FooterCopyright": {
+          "text": "© basement.studio LLC 2026 all rights reserved",
+          "typographyToken": "label",
+          "color": "foreground.tertiary"
+        },
+        "FooterSocials": {
+          "display": "flex",
+          "gap": "24px",
+          "items": [
+            { "label": "X (Twitter)",  "href": "https://x.com/basementstudio" },
+            { "label": "Instagram",    "href": "https://www.instagram.com/basementdotstudio" },
+            { "label": "GitHub",       "href": "https://github.com/basementstudio" },
+            { "label": "LinkedIn",     "href": "https://www.linkedin.com/company/basementstudio" }
+          ],
+          "linkStyles": {
+            "typographyToken": "label",
+            "color": "foreground.tertiary",
+            "hoverColor": "foreground.primary",
+            "transition": "color 200ms ease"
+          }
+        }
+      }
+    }
+  },
+
+  "animations": {
+    "description": "Global animation configuration. All scroll-triggered animations use GSAP ScrollTrigger.",
+    "library": "GSAP 3.12 + ScrollTrigger plugin",
+    "globalDefaults": {
+      "ease": "power3.out",
+      "duration": 0.75,
+      "overwrite": "auto"
+    },
+    "easingCurves": {
+      "in":        "cubic-bezier(0.55, 0, 1, 0.45)",
+      "out":       "cubic-bezier(0.0, 0, 0.2, 1)",
+      "inOut":     "cubic-bezier(0.76, 0, 0.24, 1)",
+      "elastic":   "elastic.out(1, 0.6)",
+      "back":      "back.out(1.7)",
+      "expo":      "expo.out"
+    },
+    "pageLoad": {
+      "sequence": [
+        { "step": 1, "delay": "0ms",   "target": "CustomCursor",  "animation": "fade in" },
+        { "step": 2, "delay": "200ms", "target": "Navigation",    "animation": "slideDown from -100%" },
+        { "step": 3, "delay": "400ms", "target": "HeroBackground3D", "animation": "scale from 0, elastic" },
+        { "step": 4, "delay": "400ms", "target": "HeroHeadline",  "animation": "split-word reveal" },
+        { "step": 5, "delay": "900ms", "target": "HeroSubtext",   "animation": "fade-up" }
+      ]
+    },
+    "scrollAnimations": {
+      "approach": "ScrollTrigger with scrub where appropriate, snap for none",
+      "markers": false,
+      "defaultStart": "top 85%",
+      "defaultEnd":   "bottom 15%",
+      "triggers": {
+        "marquee":       { "start": "top bottom", "animation": "marquee-start", "once": true },
+        "projectCards":  { "start": "top 88%",    "animation": "stagger-fade-up", "stagger": 0.12 },
+        "capabilities":  { "start": "top 85%",    "animation": "stagger-fade-up", "stagger": 0.1 },
+        "contact":       { "start": "top 80%",    "animation": "fade-up" }
+      }
+    },
+    "microInteractions": {
+      "buttonHover": {
+        "scale": 1.02,
+        "duration": "200ms",
+        "ease": "power2.out"
+      },
+      "navLinkHover": {
+        "color": "foreground.primary",
+        "underlineScaleX": 1,
+        "duration": "200ms"
+      },
+      "cardHover": {
+        "imageScale": 1.04,
+        "borderColor": "rgba(255,255,255,0.18)",
+        "duration": "400ms"
+      },
+      "cursorHover": {
+        "ringScale": 2,
+        "dotScale": 0.5,
+        "duration": "300ms"
+      }
+    },
+    "threeJS": {
+      "renderLoop": "GSAP ticker (gsap.ticker.add)",
+      "resizeHandler": "ResizeObserver → camera aspect + renderer size",
+      "performanceHints": {
+        "pixelRatio": "Math.min(window.devicePixelRatio, 2)",
+        "antialias": true,
+        "powerPreference": "high-performance",
+        "shadowMap": false
+      }
+    }
+  },
+
+  "interactionStates": {
+    "focusVisible": {
+      "outline": "2px solid #FF3B00",
+      "outlineOffset": "3px",
+      "borderRadius": "2px",
+      "note": "Only shows for keyboard navigation (focus-visible pseudo-class)"
+    },
+    "hoverGlobal": {
+      "cursor": "none",
+      "note": "Custom cursor replaces default cursor sitewide"
+    },
+    "linkUnderline": {
+      "method": "CSS pseudo-element scaleX transform",
+      "origin": "left on enter, right on leave",
+      "color": "accent.brand",
+      "height": "1px"
+    },
+    "buttonStates": {
+      "default":  { "opacity": 1.0 },
+      "hover":    { "opacity": 1.0, "background": "#E63300" },
+      "active":   { "opacity": 0.85, "transform": "scale(0.98)" },
+      "disabled": { "opacity": 0.4, "cursor": "not-allowed" }
+    },
+    "inputStates": {
+      "default":     { "border": "1px solid rgba(255,255,255,0.1)" },
+      "focus":       { "border": "1px solid rgba(255,255,255,0.3)", "outline": "2px solid rgba(255,59,0,0.4)" },
+      "error":       { "border": "1px solid #FF3B00", "errorText": { "color": "#FF3B00", "font": "label" } },
+      "success":     { "border": "1px solid #22C55E" }
+    }
+  },
+
+  "accessibility": {
+    "standards": ["WCAG 2.1 AA"],
+    "colorContrast": {
+      "primaryTextOnBackground":   { "ratio": "17.5:1", "passes": "AAA" },
+      "secondaryTextOnBackground": { "ratio": "6.8:1",  "passes": "AA" },
+      "accentOnBackground":        { "ratio": "4.8:1",  "passes": "AA" },
+      "note": "All interactive text must pass 4.5:1 minimum"
+    },
+    "keyboardNavigation": {
+      "tabOrder": "logical DOM order",
+      "skipLink": {
+        "present": true,
+        "text": "Skip to main content",
+        "visibleOnFocus": true,
+        "position": "fixed top-left",
+        "styles": { "background": "#FF3B00", "color": "#FFFFFF", "padding": "12px 16px", "zIndex": 9999 }
+      },
+      "trapFocus": "Mobile drawer traps focus when open",
+      "escapeKey": "Closes mobile drawer"
+    },
+    "screenReaderSupport": {
+      "ariaLabels": {
+        "nav":            "Primary navigation",
+        "marquee":        "Trusted by Visionaries — client list",
+        "projectsGrid":   "Featured Projects",
+        "capabilities":   "Studio Capabilities",
+        "contact":        "Contact Section",
+        "footer":         "Site footer",
+        "socialLinks":    "Social media links"
+      },
+      "ariaHidden": ["CustomCursor", "HeroBackground3D (canvas)", "marquee-duplicate-set"],
+      "ariaLive": ["newsletter-success", "newsletter-error"],
+      "roles": {
+        "MarqueeTrack":  "marquee",
+        "FooterNav":     "navigation",
+        "ProjectsGrid":  "list"
+      }
+    },
+    "reducedMotion": {
+      "mediaQuery": "@media (prefers-reduced-motion: reduce)",
+      "overrides": {
+        "allGSAPAnimations":    "duration → 0.01ms or removed",
+        "marquee":              "animation-play-state: paused",
+        "three-js-rotation":    "halted — object renders static",
+        "pageLoadStagger":      "all elements immediately visible at full opacity"
+      }
+    },
+    "semanticHTML": {
+      "headingHierarchy": "h1 (hero) → h2 (sections) → h3 (sub-sections) → h4 (items)",
+      "landmarkRegions": ["header", "main", "footer", "nav"],
+      "buttonVsLink": "Links navigate, buttons trigger actions (newsletter submit)"
+    }
+  },
+
+  "performanceTargets": {
+    "coreWebVitals": {
+      "LCP": "< 2.5s",
+      "CLS": "< 0.1",
+      "INP": "< 200ms"
+    },
+    "lighthouse": {
+      "performance":   ">= 90",
+      "accessibility": ">= 95",
+      "bestPractices": ">= 95",
+      "seo":           ">= 90"
+    },
+    "imageOptimization": {
+      "format":          "WebP with AVIF fallback",
+      "loading":         "lazy for below-fold, eager for hero",
+      "sizes":           "Responsive via Next.js Image component",
+      "quality":         75
+    },
+    "fontLoading": {
+      "strategy": "font-display: swap for display font, optional for mono",
+      "preload":  ["display-regular.woff2", "display-medium.woff2"]
+    },
+    "bundling": {
+      "threejsImport": "Dynamic import with next/dynamic — only loads on hero mount",
+      "gsapImport":    "Dynamic import, registered plugins client-side only"
+    }
+  },
+
+  "cssVariables": {
+    "description": ":root CSS custom properties that power the entire design system.",
+    "tokens": {
+      "--color-bg":             "#0A0A0A",
+      "--color-bg-secondary":   "#111111",
+      "--color-bg-tertiary":    "#1A1A1A",
+      "--color-fg":             "#FAFAFA",
+      "--color-fg-secondary":   "#A1A1AA",
+      "--color-fg-tertiary":    "#52525B",
+      "--color-accent":         "#FF3B00",
+      "--color-border":         "rgba(255,255,255,0.08)",
+      "--font-display":         "'ABC Diatype', 'Helvetica Neue', Helvetica, sans-serif",
+      "--font-mono":            "'ABC Diatype Mono', 'IBM Plex Mono', monospace",
+      "--nav-height":           "64px",
+      "--section-padding-y":    "clamp(80px, 10vw, 160px)",
+      "--container-padding-x":  "clamp(20px, 4vw, 48px)",
+      "--footer-padding-y":     "80px",
+      "--transition-fast":      "150ms ease",
+      "--transition-base":      "250ms ease",
+      "--transition-slow":      "400ms ease",
+      "--ease-out-expo":        "cubic-bezier(0.16, 1, 0.3, 1)",
+      "--ease-in-out":          "cubic-bezier(0.76, 0, 0.24, 1)"
+    }
+  },
+
+  "assetManifest": {
+    "fonts": [
+      { "family": "ABC Diatype",      "weight": 300, "file": "abc-diatype-light.woff2" },
+      { "family": "ABC Diatype",      "weight": 400, "file": "abc-diatype-regular.woff2" },
+      { "family": "ABC Diatype",      "weight": 500, "file": "abc-diatype-medium.woff2" },
+      { "family": "ABC Diatype",      "weight": 700, "file": "abc-diatype-bold.woff2" },
+      { "family": "ABC Diatype Mono", "weight": 400, "file": "abc-diatype-mono-regular.woff2" },
+      { "family": "ABC Diatype Mono", "weight": 500, "file": "abc-diatype-mono-medium.woff2" }
+    ],
+    "icons": [
+      { "name": "arrow-right",    "type": "SVG inline" },
+      { "name": "menu-hamburger", "type": "SVG inline" },
+      { "name": "close-x",       "type": "SVG inline" },
+      { "name": "x-twitter",     "type": "SVG inline" },
+      { "name": "instagram",     "type": "SVG inline" },
+      { "name": "github",        "type": "SVG inline" },
+      { "name": "linkedin",      "type": "SVG inline" }
+    ],
+    "images": {
+      "source": "BaseHub CMS CDN (assets.basehub.com)",
+      "format": "WebP",
+      "processing": "Next.js Image optimization (?w=3840&q=75)"
+    }
+  },
+
+  "responsiveBehavior": {
+    "mobile": {
+      "breakpoint": "< 768px",
+      "nav": "Logo + Hamburger only; links in slide-over drawer",
+      "hero": "Headline clamp min 2.75rem; subtext hidden or shortened",
+      "heroCanvas": "Reduced size, placed above fold at 40vh height",
+      "marquee": "Same, but scroll speed reduced to 60s",
+      "projects": "Single column stack",
+      "capabilities": "Single column; eyebrow collapses into heading",
+      "contact": "Email font clamp min 1.5rem",
+      "footer": "Single column stack; newsletter full-width"
+    },
+    "tablet": {
+      "breakpoint": "768px – 1023px",
+      "nav": "Full nav visible if space allows; otherwise hamburger",
+      "hero": "Headline at 5vw",
+      "projects": "2-column grid",
+      "capabilities": "2-column grid"
+    },
+    "desktop": {
+      "breakpoint": ">= 1024px",
+      "nav": "Full nav + CTA button",
+      "hero": "Full 3D canvas, large headline at 7vw",
+      "projects": "2-column grid, max-width 1344px centered",
+      "capabilities": "2-column grid"
+    }
+  },
+
+  "seoMetadata": {
+    "title": "basement.studio | We make cool shit that performs.",
+    "description": "A digital studio & branding powerhouse making cool shit that performs. We partner with the world's most ambitious startups, scale-ups and brands.",
+    "openGraph": {
+      "type": "website",
+      "image": "/og-image.jpg",
+      "imageWidth": 1200,
+      "imageHeight": 630
+    },
+    "twitter": {
+      "card": "summary_large_image",
+      "site": "@basementstudio"
+    },
+    "canonicalUrl": "https://basement.studio",
+    "jsonLd": {
+      "type": "Organization",
+      "name": "basement.studio",
+      "url": "https://basement.studio",
+      "sameAs": [
+        "https://x.com/basementstudio",
+        "https://www.instagram.com/basementdotstudio",
+        "https://github.com/basementstudio",
+        "https://www.linkedin.com/company/basementstudio"
+      ]
+    }
+  }
+}

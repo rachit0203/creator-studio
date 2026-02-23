@@ -1,65 +1,68 @@
-import Image from "next/image";
+import CapabilitiesSection from "./components/CapabilitiesSection";
+import ContactSection from "./components/ContactSection";
+import Footer from "./components/Footer";
+import HeroSection from "./components/HeroSection";
+import MarqueeSection from "./components/MarqueeSection";
+import Navigation from "./components/Navigation";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-fg)]">
+      <a
+        className="focus-ring fixed left-4 top-4 z-[9999] -translate-y-20 bg-[var(--color-accent)] px-4 py-3 text-xs font-medium uppercase tracking-[0.08em] text-white transition-transform duration-200 focus:translate-y-0"
+        href="#main"
+      >
+        Skip to main content
+      </a>
+      <Navigation />
+      <main id="main">
+        <HeroSection />
+        <MarqueeSection />
+        <CapabilitiesSection />
+        <section className="section-y container-x border-t border-white/5">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <p className="text-[0.75rem] font-medium uppercase tracking-[0.08em] text-[var(--color-fg-tertiary)]">
+                Cloudinary
+              </p>
+              <h2 className="mt-4 text-[clamp(1.5rem,3vw,2.25rem)] font-medium tracking-[-0.02em]">
+                Asset pipeline built for uploads and delivery.
+              </h2>
+              <p className="mt-3 max-w-[520px] text-base leading-[1.65] text-[var(--color-fg-secondary)]">
+                Use the protected dashboard to upload images, get optimized CDN
+                URLs, and preview transformations (resize, crop, format, and
+                quality) without leaving the studio workflow.
+              </p>
+            </div>
+            <div className="rounded-[4px] border border-white/10 bg-[var(--color-bg-secondary)] p-6">
+              <h3 className="text-[1.125rem] font-medium tracking-[-0.01em]">
+                Open the upload console
+              </h3>
+              <p className="mt-2 text-sm text-[var(--color-fg-secondary)]">
+                You'll be asked to sign in before accessing the Cloudinary
+                tools.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/dashboard"
+                  className="focus-ring inline-flex items-center justify-center rounded-[2px] bg-[var(--color-accent)] px-4 py-2 text-[0.75rem] font-medium uppercase tracking-[0.08em] text-white transition-colors duration-200 hover:bg-[#e63300]"
+                >
+                  Go to Dashboard
+                </Link>
+                <Link
+                  href="/sign-in"
+                  className="focus-ring inline-flex items-center justify-center rounded-[2px] border border-white/15 px-4 py-2 text-[0.75rem] font-medium uppercase tracking-[0.08em] text-white transition-colors duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                >
+                  Sign In
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+        <ContactSection />
       </main>
+      <Footer />
     </div>
   );
 }
